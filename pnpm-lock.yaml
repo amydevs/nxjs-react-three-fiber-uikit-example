@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@noriginmedia/norigin-spatial-navigation-core':
+        specifier: ^4.0.0
+        version: 4.0.0
       '@pmndrs/msdfonts':
         specifier: ^1.0.74
         version: 1.0.74
@@ -35,6 +38,9 @@ importers:
       react:
         specifier: ^19.2.7
         version: 19.2.7
+      react-router:
+        specifier: ^8.1.0
+        version: 8.1.0(react@19.2.7)
       three:
         specifier: ^0.185.1
         version: 0.185.1
@@ -338,6 +344,9 @@ packages:
     resolution: {integrity: sha512-veFPRd93FCnS7AgmCkPgARVGoDRrJ9cm1ujuNyA+UfQ5VKbED2002sm5XfFLFwTsKC8j04heTrwe+tU1dluXOw==}
     engines: {node: '>=18'}
 
+  '@noriginmedia/norigin-spatial-navigation-core@4.0.0':
+    resolution: {integrity: sha512-EnpklqZvVSKvyi63oiT9772PVzYg8Swj6SrGARBcz6Pfy4r8JB4sAorrTpp8nyA8d6ApVWnXqz044YdYZWzIxw==}
+
   '@nx.js/nro@1.0.0-beta.5':
     resolution: {integrity: sha512-Fo2S8p0o06Uhm+eUPBqNCb3woP5qh9O3yGuhcWKzViapLevVa9tKqeGlqR2CZGq0gGiluypkrXS/Onp1s6Yl2Q==}
     hasBin: true
@@ -525,6 +534,9 @@ packages:
   comlink@4.4.2:
     resolution: {integrity: sha512-OxGdvBmJuNKSCMO4NTl1L47VRp6xn2wG4F/2hYzB6tiCb709otOxtEYCSvK80PtjODfXXZu8ds+Nw5kVCjqd2g==}
 
+  cookie-es@3.1.1:
+    resolution: {integrity: sha512-UaXxwISYJPTr9hwQxMFYZ7kNhSXboMXP+Z3TRX6f1/NyaGPfuNUZOWP1pUEb75B2HjfklIYLVRfWiFZJyC6Npg==}
+
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
@@ -617,6 +629,9 @@ packages:
   jpeg-js@0.4.4:
     resolution: {integrity: sha512-WZzeDOEtTOBK4Mdsar0IqEU5sMr3vSV2RqkAIzUEV2BHnUfKGyswWFPFwK5EeDo93K3FohSHbLAjj0s1Wzd+dg==}
 
+  lodash-es@4.18.1:
+    resolution: {integrity: sha512-J8xewKD/Gk22OZbhpOVSwcs60zhd95ESDwezOFuA3/099925PdHJ7OFHNTGtajL3AlZkykD32HykiMo+BIBI8A==}
+
   log-update@8.0.0:
     resolution: {integrity: sha512-lddSgOt3bPASrylL54ZSpy8nBHns+vBVSoILlVOx+dei300pnLRN958rj/EdlVLKuWlSESU3qdnDZdAI7FXYGg==}
     engines: {node: '>=22'}
@@ -696,6 +711,16 @@ packages:
 
   pointer-tracker@2.5.3:
     resolution: {integrity: sha512-LiJUeIbzk4dXq678YeyrZ++mdY17q4n/2sBHfU9wIuvmSzdiPgMvmvWN2g8mY4J7YwYOIrqrZUWP/MfFHVwYtg==}
+
+  react-router@8.1.0:
+    resolution: {integrity: sha512-Mdfi61uObuvWNN9OhChOC0HV6YWOIfKRzEWOvCHRSuQg8IM+Nv10edaM/2HE8ZixBpUTdQbruyWqC3sDkkh9vw==}
+    engines: {node: '>=22.22.0'}
+    peerDependencies:
+      react: '>=19.2.7'
+      react-dom: '>=19.2.7'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
 
   react-use-measure@2.1.7:
     resolution: {integrity: sha512-KrvcAo13I/60HpwGO5jpW7E9DfusKyLPLvuHlUyP5zqnmAPhNc6qTRjUQrdTADl0lpPpDVU2/Gg51UlOGHXbdg==}
@@ -1165,6 +1190,10 @@ snapshots:
       '@jimp/types': 1.6.1
       tinycolor2: 1.6.0
 
+  '@noriginmedia/norigin-spatial-navigation-core@4.0.0':
+    dependencies:
+      lodash-es: 4.18.1
+
   '@nx.js/nro@1.0.0-beta.5':
     dependencies:
       '@nx.js/patch-nacp': 2.0.0
@@ -1392,6 +1421,8 @@ snapshots:
 
   comlink@4.4.2: {}
 
+  cookie-es@3.1.1: {}
+
   cross-spawn@7.0.6:
     dependencies:
       path-key: 3.1.1
@@ -1533,6 +1564,8 @@ snapshots:
 
   jpeg-js@0.4.4: {}
 
+  lodash-es@4.18.1: {}
+
   log-update@8.0.0:
     dependencies:
       ansi-escapes: 7.3.0
@@ -1600,6 +1633,11 @@ snapshots:
   pngjs@7.0.0: {}
 
   pointer-tracker@2.5.3: {}
+
+  react-router@8.1.0(react@19.2.7):
+    dependencies:
+      cookie-es: 3.1.1
+      react: 19.2.7
 
   react-use-measure@2.1.7(react@19.2.7):
     dependencies:

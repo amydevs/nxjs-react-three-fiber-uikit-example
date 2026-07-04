@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import * as React from "react";
 import { extend, createRoot } from "@react-three/fiber";
-import { UIKitApp } from "./UIKitApp";
+import { App } from "./App";
 import { createTouchEvents } from "./events";
 
 Object.defineProperty(globalThis, "self", {
@@ -108,4 +108,4 @@ await root.configure({
   onPointerMissed: console.debug,
 });
 
-root.render(<UIKitApp />);
+root.render(<App />);
