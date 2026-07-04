@@ -1,0 +1,39 @@
+{
+  "name": "nxreact",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "scripts": {
+    "build": "esbuild --bundle --sourcemap --sources-content=false --target=es2022 --format=esm src/main.tsx --outfile=romfs/main.js",
+    "nro": "nxjs-nro",
+    "nsp": "nxjs-nsp"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@nx.js/nro": "1.0.0-beta.5",
+    "@nx.js/nsp": "1.0.0-beta.5",
+    "@nx.js/runtime": "1.0.0-beta.5",
+    "@types/react": "^19.2.17",
+    "@types/three": "^0.185.0",
+    "esbuild": "^0.27.7"
+  },
+  "dependencies": {
+    "@pmndrs/msdfonts": "^1.0.74",
+    "@pmndrs/pointer-events": "^6.6.30",
+    "@pmndrs/uikit": "^1.0.74",
+    "@react-three/fiber": "^9.6.1",
+    "@react-three/uikit": "^1.0.74",
+    "@react-three/uikit-default": "^1.0.74",
+    "@react-three/uikit-lucide": "^1.0.74",
+    "pointer-tracker": "^2.5.3",
+    "react": "^19.2.7",
+    "three": "^0.185.1"
+  },
+  "author": {
+    "name": "Amy Y",
+    "email": "ctrlalternativedelete@gmail.com"
+  },
+  "nacp": {
+    "id": "014e4fd947310000"
+  }
+}
