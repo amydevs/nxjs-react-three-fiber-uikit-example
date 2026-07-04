@@ -28,13 +28,14 @@ Object.defineProperty(window, "HTMLImageElement", {
   configurable: false,
   enumerable: true,
 });
-// this on Image != the return of new Image(), so a polyfill is required to make "this" in an eventHandler work properly
 const imageCbMap = new Map<any, any>();
 Object.defineProperty(globalThis, "document", {
   value: {
+    // fix for r3f hover handler
     body: {
       style: {}
     },
+    // this on Image != the return of new Image(), so a polyfill is required to make "this" in an eventHandler work properly
     createElementNS: (_: string, name: string) => {
       if (name === "img") {
         const image = new Image();
