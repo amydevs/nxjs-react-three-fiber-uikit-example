@@ -32,6 +32,9 @@ Object.defineProperty(window, "HTMLImageElement", {
 const imageCbMap = new Map<any, any>();
 Object.defineProperty(globalThis, "document", {
   value: {
+    body: {
+      style: {}
+    },
     createElementNS: (_: string, name: string) => {
       if (name === "img") {
         const image = new Image();
