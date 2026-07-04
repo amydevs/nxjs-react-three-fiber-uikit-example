@@ -123,7 +123,8 @@ export function UIKitApp() {
           </CardContent>
           <CardFooter>
             <Button
-              onClick={() => {
+              onClick={(e) => {
+                console.debug(Object.keys(e))
                 setNotifications([...notifications, notifications[0]]);
               }}
               flexDirection="row"

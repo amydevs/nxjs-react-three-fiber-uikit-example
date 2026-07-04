@@ -5,40 +5,61 @@ import {
   EventManager,
   Events,
 } from "@react-three/fiber";
-import PointerTracker from "pointer-tracker/dist/index.js";
 
-const DOM_EVENTS = {
-  onClick: ["click", false],
-  onContextMenu: ["contextmenu", false],
-  onDoubleClick: ["dblclick", false],
-  onWheel: ["wheel", true],
-  onPointerDown: ["pointerdown", true],
-  onPointerUp: ["pointerup", true],
-  onPointerLeave: ["pointerleave", true],
-  onPointerMove: ["pointermove", true],
-  onPointerCancel: ["pointercancel", true],
-  onLostPointerCapture: ["lostpointercapture", true],
-} as const;
-
-type SingleTouchEvent = TouchEvent & Touch & { pointerType: "touch" };
+type InternalTouchEvent = TouchEvent & Touch;
+export type SingleTouchEvent = InternalTouchEvent & {
+  pointerId: number,
+  pointerType: "touch"
+};
+// export type SingleTouchEvent = React.SyntheticEvent<
+//   Screen,
+//   InternalTouchEvent & { pointerType: "touch" }
+// >;
 
 /** Default R3F event manager for web */
 export function createTouchEvents(store: RootStore): EventManager<Screen> {
   const { handlePointer } = createEvents(store);
   let start: { id: number; x: number; y: number } | null = null;
-  const attachedCbs: Record<string, (event: SingleTouchEvent) => void> = {};
-  const handleTouch = (event: SingleTouchEvent, name: keyof Events) => {
+  const attachedCbs: Record<string, (event: InternalTouchEvent) => void> = {};
+  const handleTouch = (event: InternalTouchEvent, name: keyof Events) => {
     const callback = handlePointer(name);
-    callback(event);
+    // let isPropagationStopped = false;
+    // const origStopPropagation = event.stopPropagation.bind(event);
+    // const stopPropagation = () => {
+    //   isPropagationStopped = true;
+    //   origStopPropagation();
+    // };
+    // const singleTouchEvent: SingleTouchEvent = {
+    //   ...event,
+    //   currentTarget: event.currentTarget as Screen,
+    //   nativeEvent: Object.assign(event, {
+    //     pointerType: "touch" as const,
+    //     stopPropagation: stopPropagation,
+    //   }),
+    //   preventDefault: () => event.preventDefault(),
+    //   stopPropagation: () => stopPropagation,
+    //   isDefaultPrevented: () => event.defaultPrevented,
+    //   isPropagationStopped: () => isPropagationStopped,
+    //   persist: () => {},
+    // };
+    callback(
+      Object.assign(event, {
+        pointerId: event.identifier,
+        pointerType: "touch" as const,
+      }) satisfies SingleTouchEvent,
+    );
   };
 
   return {
     priority: 1,
     enabled: true,
     compute(event_: DomEvent, state: RootState, _previous?: RootState) {
-      const event = event_ as SingleTouchEvent;
-      state.pointer.set((event.clientX / state.size.width) * 2 - 1, -(event.clientY / state.size.height) * 2 + 1)
-      state.raycaster.setFromCamera(state.pointer, state.camera)
+      const event = event_ as InternalTouchEvent;
+      state.pointer.set(
+        (event.clientX / state.size.width) * 2 - 1,
+        -(event.clientY / state.size.height) * 2 + 1,
+      );
+      state.raycaster.setFromCamera(state.pointer, state.camera);
     },
     connected: undefined,
     handlers: undefined,
@@ -56,27 +77,27 @@ export function createTouchEvents(store: RootStore): EventManager<Screen> {
       attachedCbs["touchstart"] = (event) => {
         const touch = event.changedTouches[0];
         start = { id: touch.identifier, x: touch.clientX, y: touch.clientY };
-        handleTouch(Object.assign(event, { ...touch, pointerType: "touch" }), "onPointerDown");
+        handleTouch(Object.assign(event, touch), "onPointerDown");
       };
       attachedCbs["touchmove"] = (event) => {
         const touch =
           [...event.changedTouches].find((t) => t.identifier === start?.id) ??
           event.changedTouches[0];
-        handleTouch(Object.assign(event, { ...touch, pointerType: "touch" }), "onPointerMove");
+        handleTouch(Object.assign(event, touch), "onPointerMove");
       };
       attachedCbs["touchend"] = (event) => {
         const touch =
           [...event.changedTouches].find((t) => t.identifier === start?.id) ??
           event.changedTouches[0];
-        const singleTouchEvent = Object.assign(event, { ...touch, pointerType: "touch" });
-        handleTouch(singleTouchEvent, "onPointerUp");
+        const internalTouchEvent = Object.assign(event, touch);
+        handleTouch(internalTouchEvent, "onPointerUp");
         if (
           start &&
           Math.hypot(touch.clientX - start.x, touch.clientY - start.y) < 20
         ) {
-          handleTouch(singleTouchEvent, "onClick");
+          handleTouch(internalTouchEvent, "onClick");
         }
-        handleTouch(singleTouchEvent, "onPointerLeave");
+        handleTouch(internalTouchEvent, "onPointerLeave");
         start = null;
       };
       Object.entries(attachedCbs).forEach(([name, cb]) => {
