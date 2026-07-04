@@ -1,4 +1,3 @@
-import { Fullscreen as FullscreenRef } from "@pmndrs/uikit";
 import { Container, Fullscreen, Text } from "@react-three/uikit";
 import {
   colors,
@@ -15,7 +14,6 @@ import { BellRing, Check } from "@react-three/uikit-lucide";
 import * as React from "react";
 
 export function UIKitApp() {
-  const ref = React.useRef<FullscreenRef>(null);
   const [isNotificationsActive, setIsNotificationsActive] =
     React.useState(false);
   const [notifications, setNotifications] = React.useState(() => [
@@ -41,14 +39,10 @@ export function UIKitApp() {
       <directionalLight intensity={1} position={[-5, 5, 10]} />
       <Fullscreen
         overflow="scroll"
-        flexDirection="column"
-        alignItems="center"
-        scrollbarWidth={20}
-        scrollbarColor={colors.foreground}
+        alignItems="flex-start"
+        justifyContent={"center"}
         padding={32}
         backgroundColor={colors.background}
-        ref={ref}
-        maxHeight={999999}
       >
         <Card width={380}>
           <CardHeader>
