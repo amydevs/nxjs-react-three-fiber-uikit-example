@@ -2,7 +2,7 @@ import * as THREE from "three";
 import * as React from "react";
 import { extend, createRoot } from "@react-three/fiber";
 import { UIKitApp } from "./UIKitApp";
-import { createPointerEvents } from "./events";
+import { createTouchEvents } from "./events";
 
 Object.defineProperty(globalThis, "self", {
   value: window,
@@ -90,7 +90,7 @@ extend(THREE as any);
 
 const root = createRoot(screen);
 await root.configure({
-  events: createPointerEvents,
+  events: createTouchEvents as any,
   size: {
     height: screen.height,
     width: screen.width,

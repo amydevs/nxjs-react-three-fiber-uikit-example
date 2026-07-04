@@ -83,7 +83,7 @@ export function UIKitApp() {
               </Container>
               <Switch
                 checked={isNotificationsActive}
-                onPointerDown={() =>
+                onClick={() =>
                   setIsNotificationsActive(!isNotificationsActive)
                 }
               />
@@ -123,7 +123,7 @@ export function UIKitApp() {
           </CardContent>
           <CardFooter>
             <Button
-              onPointerDown={() => {
+              onClick={() => {
                 setNotifications([...notifications, notifications[0]]);
               }}
               flexDirection="row"
