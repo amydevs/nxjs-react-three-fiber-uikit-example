@@ -3,9 +3,16 @@ import * as React from "react";
 import { extend, createRoot } from "@react-three/fiber";
 import { App } from "./App";
 import { createTouchEvents } from "./events";
+import { DOMParser } from "@xmldom/xmldom";
 
 Object.defineProperty(globalThis, "self", {
   value: window,
+  writable: false,
+  configurable: false,
+  enumerable: true,
+});
+Object.defineProperty(globalThis, "DOMParser", {
+  value: DOMParser,
   writable: false,
   configurable: false,
   enumerable: true,
@@ -29,61 +36,64 @@ Object.defineProperty(window, "HTMLImageElement", {
   enumerable: true,
 });
 const imageCbMap = new Map<any, any>();
+const createElement = (name: string) => {
+  if (name === "img") {
+    const image = new Image();
+    const origAddEventListener = image.addEventListener;
+    Object.defineProperty(image, "addEventListener", {
+      value: function (...args: Parameters<typeof origAddEventListener>) {
+        let [type, cb, opts] = args;
+        const once =
+          (typeof opts === "object" && "once" in opts && opts.once) || false;
+        const origCbObj = cb;
+        if (cb != null) {
+          if ("handleEvent" in cb) {
+            const origCb = cb.handleEvent;
+            cb.handleEvent = (...args) => {
+              if (once) {
+                imageCbMap.delete(origCbObj);
+              }
+              origCb.bind(image)(...args);
+            };
+          } else {
+            const origCb = cb;
+            cb = (...args) => {
+              if (once) {
+                imageCbMap.delete(origCbObj);
+              }
+              origCb.bind(image)(...args);
+            };
+          }
+        }
+        imageCbMap.set(origCbObj, cb);
+        origAddEventListener.bind(this)(type, cb, opts);
+      },
+    });
+    const origRemoveEventListener = image.removeEventListener;
+    Object.defineProperty(image, "removeEventListener", {
+      value: function (...args: Parameters<typeof origRemoveEventListener>) {
+        let [type, cb, opts] = args;
+        const origCb = imageCbMap.get(cb);
+        imageCbMap.delete(cb);
+        origRemoveEventListener(type, origCb, opts);
+      },
+    });
+    return image;
+  }
+  else if (name === "canvas") {
+    console.debug("canvas created")
+    return new OffscreenCanvas(128, 128);
+  }
+};
 Object.defineProperty(globalThis, "document", {
   value: {
     // fix for r3f hover handler
     body: {
-      style: {}
+      style: {},
     },
     // this on Image != the return of new Image(), so a polyfill is required to make "this" in an eventHandler work properly
-    createElementNS: (_: string, name: string) => {
-      if (name === "img") {
-        const image = new Image();
-        const origAddEventListener = image.addEventListener;
-        Object.defineProperty(image, "addEventListener", {
-          value: function (...args: Parameters<typeof origAddEventListener>) {
-            let [type, cb, opts] = args;
-            const once =
-              (typeof opts === "object" && "once" in opts && opts.once) ||
-              false;
-            const origCbObj = cb;
-            if (cb != null) {
-              if ("handleEvent" in cb) {
-                const origCb = cb.handleEvent;
-                cb.handleEvent = (...args) => {
-                  if (once) {
-                    imageCbMap.delete(origCbObj);
-                  }
-                  origCb.bind(image)(...args);
-                };
-              } else {
-                const origCb = cb;
-                cb = (...args) => {
-                  if (once) {
-                    imageCbMap.delete(origCbObj);
-                  }
-                  origCb.bind(image)(...args);
-                };
-              }
-            }
-            imageCbMap.set(origCbObj, cb);
-            origAddEventListener.bind(this)(type, cb, opts);
-          },
-        });
-        const origRemoveEventListener = image.removeEventListener;
-        Object.defineProperty(image, "removeEventListener", {
-          value: function (
-            ...args: Parameters<typeof origRemoveEventListener>
-          ) {
-            let [type, cb, opts] = args;
-            const origCb = imageCbMap.get(cb);
-            imageCbMap.delete(cb);
-            origRemoveEventListener(type, origCb, opts);
-          },
-        });
-        return image;
-      }
-    },
+    createElement,
+    createElementNS: (_: string, name: string) => createElement(name),
   },
   writable: false,
   configurable: false,
@@ -102,7 +112,7 @@ await root.configure({
     left: 0,
   },
   gl: {
-    localClippingEnabled: true
+    localClippingEnabled: true,
   },
   dpr: [1, 1],
   onPointerMissed: console.debug,

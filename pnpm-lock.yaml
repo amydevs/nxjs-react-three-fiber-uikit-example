@@ -32,6 +32,9 @@ importers:
       '@react-three/uikit-lucide':
         specifier: ^1.0.74
         version: 1.0.74(@react-three/fiber@9.6.1(@types/react@19.2.17)(react@19.2.7)(three@0.185.1))(@types/react@19.2.17)(react@19.2.7)(three@0.185.1)(use-sync-external-store@1.6.0(react@19.2.7))
+      '@xmldom/xmldom':
+        specifier: ^0.9.10
+        version: 0.9.10
       pointer-tracker:
         specifier: ^2.5.3
         version: 2.5.3

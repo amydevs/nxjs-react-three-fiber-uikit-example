@@ -1,3 +1,4 @@
+import { BellRing } from "@react-three/uikit-lucide";
 import { Container, Text } from "@react-three/uikit";
 import {
   colors,
@@ -48,6 +49,7 @@ export function Test() {
           borderWidth={1}
           padding={16}
         >
+          <BellRing />
           <Container flexDirection="column" gap={4}>
             <Text fontSize={14} lineHeight="100%">
               Push Notifications
