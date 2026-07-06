@@ -1,10 +1,20 @@
 # nx.js + react + @react-three/fiber + @react-three/uikit Example
 
-![demo](./media/demo.mp4)
+<video controls width="1280" height="720">
+    <source src="./media/demo.mp4" type="video/mp4">
+</video>
 
 This repository is an example of using [nx.js](https://nxjs.n8.io/), [React](https://react.dev/), [React Three Fiber](https://r3f.docs.pmnd.rs/), [Poimandres' UIKit](https://pmndrs.github.io/uikit/docs) to demonstrate a base Proof of Concept.
 
 The point of this is to be able to use React with Tailwind-like styling to be able to develop user interfaces for Nintendo Switch homebrew.
+
+What confirmed does work:
+
+- Touch and scrolling input
+- MSDF font rendering
+- SVG rendering and SVG-based icons
+- Adjusting device pixel ratio for component scale
+- Routing using react-router
 
 What doesn't work yet:
 
@@ -29,7 +39,6 @@ function VideoComponent() {
     )
 }
 ```
-
 
 There are a few files to note in order to get React Three Fiber to run smoothly on nx.js:
 
