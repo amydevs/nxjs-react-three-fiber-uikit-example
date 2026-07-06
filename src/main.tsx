@@ -128,19 +128,21 @@ applyConsolePolyfills();
 
 extend(THREE as any);
 
+const dpr = 1.2;
+
 const root = createRoot(screen);
 await root.configure({
   events: createTouchEvents as any,
   size: {
-    height: screen.height,
-    width: screen.width,
+    height: screen.height / dpr,
+    width: screen.width / dpr,
     top: 0,
     left: 0,
   },
   gl: {
     localClippingEnabled: true,
   },
-  dpr: [1, 1],
+  dpr: [dpr, dpr],
   onPointerMissed: console.debug,
 });
 

@@ -11,10 +11,6 @@ export type SingleTouchEvent = InternalTouchEvent & {
   pointerId: number,
   pointerType: "touch"
 };
-// export type SingleTouchEvent = React.SyntheticEvent<
-//   Screen,
-//   InternalTouchEvent & { pointerType: "touch" }
-// >;
 
 /** Default R3F event manager for web */
 export function createTouchEvents(store: RootStore): EventManager<Screen> {
@@ -36,9 +32,10 @@ export function createTouchEvents(store: RootStore): EventManager<Screen> {
     enabled: true,
     compute(event_: DomEvent, state: RootState, _previous?: RootState) {
       const event = event_ as InternalTouchEvent;
+      const dpr = state.gl.getPixelRatio();
       state.pointer.set(
-        (event.clientX / state.size.width) * 2 - 1,
-        -(event.clientY / state.size.height) * 2 + 1,
+        (event.clientX / state.size.width / dpr) * 2 - 1,
+        -(event.clientY / state.size.height / dpr) * 2 + 1,
       );
       state.raycaster.setFromCamera(state.pointer, state.camera);
     },
