@@ -53,6 +53,7 @@ export function applyThreeJsPolyfills() {
   };
   const imageCbMap = new Map<any, any>();
   const property_descriptors: Record<string, PropertyDescriptor> = {
+    // required for THREE to bootstrap correctly
     self: {
       value: window,
       writable: false,
@@ -65,19 +66,21 @@ export function applyThreeJsPolyfills() {
       configurable: false,
       enumerable: true,
     },
+    // To support THREE.Audio
     HTMLAudioElement: {
       value: Audio,
       writable: false,
       configurable: false,
       enumerable: true,
     },
+    // To support THREE.Texture with image source
     HTMLImageElement: {
       value: Image,
       writable: false,
       configurable: false,
       enumerable: true,
     },
-    // THREE.SVGLoader requires DOMParser with querySelector support
+    // To support THREE.SVGLoader requires DOMParser with querySelector support
     DOMParser: {
       value: DOMParser,
       writable: false,
