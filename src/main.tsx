@@ -5,8 +5,10 @@ import { App } from "./App";
 import { createTouchEvents } from "./events";
 import { DOMParser } from 'linkedom';
 
-function applyGlobalPolyfills() {
+function applyThreeJsPolyfills() {
   const createElement = (name: string) => {
+    // classes that extend EventTarget but have constructors that return a different object
+    // will cause "this" on to be bound to the class instance rather than the returned object.
     if (name === "img") {
       const image = new Image();
       const origAddEventListener = image.addEventListener;
@@ -18,24 +20,24 @@ function applyGlobalPolyfills() {
           const orig_cb_obj = cb;
           if (cb != null) {
             if ("handleEvent" in cb) {
-              const orig_cb = cb.handleEvent;
+              const origCb = cb.handleEvent;
               cb.handleEvent = (...args) => {
                 if (once) {
-                  image_cb_map.delete(orig_cb_obj);
+                  imageCbMap.delete(orig_cb_obj);
                 }
-                orig_cb.bind(image)(...args);
+                origCb.bind(image)(...args);
               };
             } else {
-              const orig_cb = cb;
+              const origCb = cb;
               cb = (...args) => {
                 if (once) {
-                  image_cb_map.delete(orig_cb_obj);
+                  imageCbMap.delete(orig_cb_obj);
                 }
-                orig_cb.bind(image)(...args);
+                origCb.bind(image)(...args);
               };
             }
           }
-          image_cb_map.set(orig_cb_obj, cb);
+          imageCbMap.set(orig_cb_obj, cb);
           origAddEventListener.bind(this)(type, cb, opts);
         },
       });
@@ -43,18 +45,18 @@ function applyGlobalPolyfills() {
       Object.defineProperty(image, "removeEventListener", {
         value: function (...args: Parameters<typeof origRemoveEventListener>) {
           let [type, orig_cb_obj, opts] = args;
-          const cb = image_cb_map.get(orig_cb_obj);
-          image_cb_map.delete(orig_cb_obj);
+          const cb = imageCbMap.get(orig_cb_obj);
+          imageCbMap.delete(orig_cb_obj);
           origRemoveEventListener(type, cb, opts);
         },
       });
       return image;
     } else if (name === "canvas") {
+      // polyfill for THREE SVGLoader
       return new OffscreenCanvas(64, 64);
     }
   };
-  // this on Image != the return of new Image(), so a polyfill is required to make "this" in an eventHandler work properly
-  const image_cb_map = new Map<any, any>();
+  const imageCbMap = new Map<any, any>();
   const property_descriptors: Record<string, PropertyDescriptor> = {
     self: {
       value: window,
@@ -80,6 +82,7 @@ function applyGlobalPolyfills() {
       configurable: false,
       enumerable: true,
     },
+    // THREE.SVGLoader requires DOMParser with querySelector support
     DOMParser: {
       value: DOMParser,
       writable: false,
@@ -102,6 +105,9 @@ function applyGlobalPolyfills() {
   for (const e of [globalThis, window]) {
     Object.defineProperties(e, property_descriptors);
   }
+}
+
+function applyConsolePolyfills() {
   // polyfill for console methods
   for (const k of ["log", "warn", "info", "error"] as const) {
     const original = console[k].bind(console);
@@ -117,7 +123,8 @@ function applyGlobalPolyfills() {
   }
 }
 
-applyGlobalPolyfills();
+applyThreeJsPolyfills();
+applyConsolePolyfills();
 
 extend(THREE as any);
 
