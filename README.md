@@ -1,8 +1,6 @@
 # nx.js + react + @react-three/fiber + @react-three/uikit Example
 
-<video controls width="1280" height="720">
-    <source src="./media/demo.mp4" type="video/mp4">
-</video>
+<video src="./media/demo.mp4" controls width="1280" height="720" />
 
 This repository is an example of using [nx.js](https://nxjs.n8.io/), [React](https://react.dev/), [React Three Fiber](https://r3f.docs.pmnd.rs/), [Poimandres' UIKit](https://pmndrs.github.io/uikit/docs) to demonstrate a base Proof of Concept.
 
@@ -14,7 +12,7 @@ What confirmed does work:
 - MSDF font rendering
 - SVG rendering and SVG-based icons
 - Adjusting device pixel ratio for component scale
-- Routing using react-router
+
 
 What doesn't work yet:
 
