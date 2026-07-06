@@ -3,12 +3,11 @@ import * as React from "react";
 import { extend, createRoot } from "@react-three/fiber";
 import { App } from "./App";
 import { createTouchEvents } from "./events";
-import { DOMParser } from "@xmldom/xmldom";
+import { DOMParser } from 'linkedom';
 
 function applyGlobalPolyfills() {
   const createElement = (name: string) => {
     if (name === "img") {
-      console.debug("image created");
       const image = new Image();
       const origAddEventListener = image.addEventListener;
       Object.defineProperty(image, "addEventListener", {
