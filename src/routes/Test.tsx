@@ -103,7 +103,6 @@ export function Test() {
       <CardFooter>
         <Button
           onClick={(e) => {
-            console.debug(Object.keys(e));
             setNotifications([...notifications, notifications[0]]);
           }}
           flexDirection="row"

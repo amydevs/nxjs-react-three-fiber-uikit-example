@@ -23,25 +23,6 @@ export function createTouchEvents(store: RootStore): EventManager<Screen> {
   const attachedCbs: Record<string, (event: InternalTouchEvent) => void> = {};
   const handleTouch = (event: InternalTouchEvent, name: keyof Events) => {
     const callback = handlePointer(name);
-    // let isPropagationStopped = false;
-    // const origStopPropagation = event.stopPropagation.bind(event);
-    // const stopPropagation = () => {
-    //   isPropagationStopped = true;
-    //   origStopPropagation();
-    // };
-    // const singleTouchEvent: SingleTouchEvent = {
-    //   ...event,
-    //   currentTarget: event.currentTarget as Screen,
-    //   nativeEvent: Object.assign(event, {
-    //     pointerType: "touch" as const,
-    //     stopPropagation: stopPropagation,
-    //   }),
-    //   preventDefault: () => event.preventDefault(),
-    //   stopPropagation: () => stopPropagation,
-    //   isDefaultPrevented: () => event.defaultPrevented,
-    //   isPropagationStopped: () => isPropagationStopped,
-    //   persist: () => {},
-    // };
     callback(
       Object.assign(event, {
         pointerId: event.identifier,

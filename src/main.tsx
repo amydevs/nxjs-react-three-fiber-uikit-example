@@ -5,100 +5,120 @@ import { App } from "./App";
 import { createTouchEvents } from "./events";
 import { DOMParser } from "@xmldom/xmldom";
 
-Object.defineProperty(globalThis, "self", {
-  value: window,
-  writable: false,
-  configurable: false,
-  enumerable: true,
-});
-Object.defineProperty(globalThis, "DOMParser", {
-  value: DOMParser,
-  writable: false,
-  configurable: false,
-  enumerable: true,
-});
-Object.defineProperty(globalThis, "HTMLVideoElement", {
-  value: Video,
-  writable: false,
-  configurable: false,
-  enumerable: true,
-});
-Object.defineProperty(window, "HTMLAudioElement", {
-  value: Audio,
-  writable: false,
-  configurable: false,
-  enumerable: true,
-});
-Object.defineProperty(window, "HTMLImageElement", {
-  value: Image,
-  writable: false,
-  configurable: false,
-  enumerable: true,
-});
-const imageCbMap = new Map<any, any>();
-const createElement = (name: string) => {
-  if (name === "img") {
-    const image = new Image();
-    const origAddEventListener = image.addEventListener;
-    Object.defineProperty(image, "addEventListener", {
-      value: function (...args: Parameters<typeof origAddEventListener>) {
-        let [type, cb, opts] = args;
-        const once =
-          (typeof opts === "object" && "once" in opts && opts.once) || false;
-        const origCbObj = cb;
-        if (cb != null) {
-          if ("handleEvent" in cb) {
-            const origCb = cb.handleEvent;
-            cb.handleEvent = (...args) => {
-              if (once) {
-                imageCbMap.delete(origCbObj);
-              }
-              origCb.bind(image)(...args);
-            };
-          } else {
-            const origCb = cb;
-            cb = (...args) => {
-              if (once) {
-                imageCbMap.delete(origCbObj);
-              }
-              origCb.bind(image)(...args);
-            };
+function applyGlobalPolyfills() {
+  const createElement = (name: string) => {
+    if (name === "img") {
+      console.debug("image created");
+      const image = new Image();
+      const origAddEventListener = image.addEventListener;
+      Object.defineProperty(image, "addEventListener", {
+        value: function (...args: Parameters<typeof origAddEventListener>) {
+          let [type, cb, opts] = args;
+          const once =
+            (typeof opts === "object" && "once" in opts && opts.once) || false;
+          const orig_cb_obj = cb;
+          if (cb != null) {
+            if ("handleEvent" in cb) {
+              const orig_cb = cb.handleEvent;
+              cb.handleEvent = (...args) => {
+                if (once) {
+                  image_cb_map.delete(orig_cb_obj);
+                }
+                orig_cb.bind(image)(...args);
+              };
+            } else {
+              const orig_cb = cb;
+              cb = (...args) => {
+                if (once) {
+                  image_cb_map.delete(orig_cb_obj);
+                }
+                orig_cb.bind(image)(...args);
+              };
+            }
           }
-        }
-        imageCbMap.set(origCbObj, cb);
-        origAddEventListener.bind(this)(type, cb, opts);
-      },
-    });
-    const origRemoveEventListener = image.removeEventListener;
-    Object.defineProperty(image, "removeEventListener", {
-      value: function (...args: Parameters<typeof origRemoveEventListener>) {
-        let [type, cb, opts] = args;
-        const origCb = imageCbMap.get(cb);
-        imageCbMap.delete(cb);
-        origRemoveEventListener(type, origCb, opts);
-      },
-    });
-    return image;
-  }
-  else if (name === "canvas") {
-    console.debug("canvas created")
-    return new OffscreenCanvas(128, 128);
-  }
-};
-Object.defineProperty(globalThis, "document", {
-  value: {
-    // fix for r3f hover handler
-    body: {
-      style: {},
+          image_cb_map.set(orig_cb_obj, cb);
+          origAddEventListener.bind(this)(type, cb, opts);
+        },
+      });
+      const origRemoveEventListener = image.removeEventListener;
+      Object.defineProperty(image, "removeEventListener", {
+        value: function (...args: Parameters<typeof origRemoveEventListener>) {
+          let [type, orig_cb_obj, opts] = args;
+          const cb = image_cb_map.get(orig_cb_obj);
+          image_cb_map.delete(orig_cb_obj);
+          origRemoveEventListener(type, cb, opts);
+        },
+      });
+      return image;
+    } else if (name === "canvas") {
+      return new OffscreenCanvas(64, 64);
+    }
+  };
+  // this on Image != the return of new Image(), so a polyfill is required to make "this" in an eventHandler work properly
+  const image_cb_map = new Map<any, any>();
+  const property_descriptors: Record<string, PropertyDescriptor> = {
+    self: {
+      value: window,
+      writable: false,
+      configurable: false,
+      enumerable: true,
     },
-    // this on Image != the return of new Image(), so a polyfill is required to make "this" in an eventHandler work properly
-    createElement,
-    createElementNS: (_: string, name: string) => createElement(name),
-  },
-  writable: false,
-  configurable: false,
-  enumerable: true,
-});
+    HTMLVideoElement: {
+      value: Video,
+      writable: false,
+      configurable: false,
+      enumerable: true,
+    },
+    HTMLAudioElement: {
+      value: Audio,
+      writable: false,
+      configurable: false,
+      enumerable: true,
+    },
+    HTMLImageElement: {
+      value: Image,
+      writable: false,
+      configurable: false,
+      enumerable: true,
+    },
+    DOMParser: {
+      value: DOMParser,
+      writable: false,
+      configurable: false,
+      enumerable: true,
+    },
+    document: {
+      value: {
+        body: {
+          style: {},
+        },
+        createElement,
+        createElementNS: (_: string, name: string) => createElement(name)
+      },
+      writable: false,
+      configurable: false,
+      enumerable: true,
+    },
+  };
+  for (const e of [globalThis, window]) {
+    Object.defineProperties(e, property_descriptors);
+  }
+  // polyfill for console methods
+  for (const k of ["log", "warn", "info", "error"] as const) {
+    const original = console[k].bind(console);
+    Object.defineProperty(console, k, {
+      value: (...args: any[]) => {
+        console.debug(...args);
+        original(...args);
+      },
+      writable: false,
+      configurable: false,
+      enumerable: true,
+    });
+  }
+}
+
+applyGlobalPolyfills();
 
 extend(THREE as any);
 
