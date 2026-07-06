@@ -1,6 +1,6 @@
 # nx.js + react + @react-three/fiber + @react-three/uikit Example
 
-<video src="./media/demo.mp4" width="1280" height="720"></video>
+![demo](./media/demo.gif)
 
 This repository is an example of using [nx.js](https://nxjs.n8.io/), [React](https://react.dev/), [React Three Fiber](https://r3f.docs.pmnd.rs/), [Poimandres' UIKit](https://pmndrs.github.io/uikit/docs) to demonstrate a base Proof of Concept.
 
