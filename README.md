@@ -2,7 +2,7 @@
 
 ![demo](./media/demo.gif)
 
-This repository is an example of using [nx.js](https://nxjs.n8.io/), [React](https://react.dev/), [React Three Fiber](https://r3f.docs.pmnd.rs/), [Poimandres' UIKit](https://pmndrs.github.io/uikit/docs) to demonstrate a base Proof of Concept.
+This repository is an example of using [nx.js](https://nxjs.n8.io/), [React](https://react.dev/), [React Three Fiber](https://r3f.docs.pmnd.rs/), [Poimandres' UIKit](https://pmndrs.github.io/uikit/docs) to demonstrate a base Proof of Concept for React on Nintendo Switch homebrew.
 
 The point of this is to be able to use React with Tailwind-like styling to be able to develop user interfaces for Nintendo Switch homebrew.
 
