@@ -23,7 +23,7 @@ function VideoComponent() {
         canvas_texture.needsUpdate = !video.paused
     })
     return (
-        <CustomContainer width={1280} height={720}>
+        <CustomContainer onClick={() => video.paused ? video.play() : video.pause()} width={1280} height={720}>
             <meshBasicMaterial map={canvas_texture} />
         </CustomContainer>
     )
