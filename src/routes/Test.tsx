@@ -12,8 +12,18 @@ import {
   Button,
 } from "@react-three/uikit-default";
 import * as React from "react";
+import { useFocusable } from "@noriginmedia/norigin-spatial-navigation-react";
 
 export function Test() {
+  const toggle = useFocusable<object, React.ComponentRef<typeof Switch>>({
+    onEnterPress: () => setIsNotificationsActive((active) => !active),
+  });
+  const addButton = useFocusable<object, React.ComponentRef<typeof Button>>({
+    onEnterPress: () => setNotifications((n) => [...n, n[0]]),
+  });
+  React.useEffect(() => {
+    toggle.focusSelf();
+  }, [toggle.focusSelf]);
   const [isNotificationsActive, setIsNotificationsActive] =
     React.useState(false);
   const [notifications, setNotifications] = React.useState(() => [
@@ -63,6 +73,9 @@ export function Test() {
             </Text>
           </Container>
           <Switch
+            ref={toggle.ref}
+            borderWidth={2}
+            borderColor={toggle.focused ? colors.ring : colors.card}
             checked={isNotificationsActive}
             onClick={() => setIsNotificationsActive(!isNotificationsActive)}
           />
@@ -102,6 +115,9 @@ export function Test() {
       </CardContent>
       <CardFooter>
         <Button
+          ref={addButton.ref}
+          borderWidth={2}
+          borderColor={addButton.focused ? colors.ring : colors.card}
           onClick={(e) => {
             setNotifications([...notifications, notifications[0]]);
           }}

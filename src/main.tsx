@@ -1,12 +1,16 @@
+import "intl";
+import "intl/locale-data/jsonp/en-US.js";
 import * as THREE from "three";
 import * as React from "react";
 import { extend, createRoot } from "@react-three/fiber";
 import { App } from "./App";
 import { createTouchEvents } from "./events";
 import { applyConsolePolyfills, applyThreeJsPolyfills } from "./polyfills";
+import { initSpatialNavigation } from "./spatial-navigation";
 
 applyThreeJsPolyfills();
 applyConsolePolyfills();
+initSpatialNavigation();
 
 extend(THREE as any);
 
